@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\Auth\LoginRegisterController;
 use Illuminate\Support\Facades\Route;
@@ -28,3 +29,7 @@ Route::controller(LoginRegisterController::class)->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [BukuController::class, 'index']);
 });
+
+Route::resource('users', UserController::class);
+Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('users/{id}', [UserController::class, 'update'])->name('users.update');

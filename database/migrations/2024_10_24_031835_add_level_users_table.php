@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('level')->default('guest')->after('email'); // Default set to 'guest'
+            $table->string('level')->default('user')->after('email'); // Default set to 'guest'
         });
 
         // Update existing users: assign roles 'admin' or 'user' as needed, leave 'guest' as default for new users
