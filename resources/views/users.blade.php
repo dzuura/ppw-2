@@ -26,7 +26,7 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-secondary btn-sm">Edit</a>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
                                 @method('DELETE')
                                 @csrf
