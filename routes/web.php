@@ -1,10 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Route;   
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\Auth\LoginRegisterController;
 use App\Http\Controllers\GalleryController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SendEmailController;
+use App\Http\Controllers\SendEmailControlller;
+use App\Mail\SendEmail;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,3 +46,8 @@ Route::put('users/{id}', [UserController::class, 'update'])->name('users.update'
 Route::resource('gallery', GalleryController::class);
 Route::get('/gallery/edit/{id}', [GalleryController::class, 'edit'])->name('gallery.edit');
 Route::post('/gallery/update/{id}', [GalleryController::class, 'update'])->name('gallery.update');
+
+// Email routes
+Route::get('/send-email', [SendEmailController::class, 'index'])->name('send.email');
+Route::post('/post-email', [SendEmailController::class,'store'])->name('post.email');
+Route::get('/register-email', [SendEmailController::class, 'registerEmail'])->name('register.email');

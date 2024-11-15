@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laravel 10 Custom User Registration & Login Tutorial - AllPHPTricks.com</title>
+    <title>Custom Login Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAq046Mgn0M8@zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('lightbox2/dist/css/lightbox.min.css') }}">
@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container">
-            <a class="navbar-brand" href="{{ URL('/') }}">Custom Login Register</a>
+            <a class="navbar-brand" href="{{ URL('/') }}">Laravel 10</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -29,6 +29,22 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('register') ? 'active' : '' }}"
                                 href="{{ route('register') }}">Register</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Email
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="nav-link {{ request()->is('send-email') ? 'active' : '' }}"
+                                        href="{{ route('send.email') }}">Send Email</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link {{ request()->is('register-email') ? 'active' : '' }}"
+                                        href="{{ route('register.email') }}">Register Email</a>
+                                </li>
+                            </ul>
                         </li>
                     @else
                         <li class="nav-item dropdown">
