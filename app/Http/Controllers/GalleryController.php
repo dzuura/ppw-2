@@ -5,37 +5,70 @@ namespace App\Http\Controllers;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class GalleryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/galleries",
+     *     tags={"Galleries"},
+     *     summary="Get list of galleries",
+     *     description="Returns a paginated list of galleries",
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of galleries",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="current_page", type="integer"),
+     *                 @OA\Property(property="data", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Gallery")
+     *                 ),
+     *                 @OA\Property(property="last_page", type="integer"),
+     *                 @OA\Property(property="total", type="integer"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Not Found"),
+     * )
      */
-    public function index()
+    public function api()
     {
-        $data = array(
-            'id' => 'gallery',
-            'menu' => 'Gallery',
-            'galleries' => Gallery::where('picture', '!=', '')
-            ->whereNotNull('picture')->orderBy('created_at', 'desc')->paginate(30)
-        );
-        return view('gallery.index')->with($data);
+        $galleries = Gallery::where('picture', '!=', '')
+            ->whereNotNull('picture')
+            ->orderBy('created_at', 'desc')
+            ->paginate(30);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $galleries,
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function index()
+    {
+        // Mengambil data dari API
+        $response = Http::get(config('app.url') . '/api/galleries');
+
+        if ($response->successful() && $response->json()['status'] === 'success') {
+            $galleries = $response->json()['data']['data']; // Akses data galeri
+        } else {
+            $galleries = [];
+        }
+
+        return view('gallery.index', compact('galleries'));
+    }
+
     public function create()
     {
         return view('gallery.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $this->validate ($request, [
+        $this->validate($request, [
             'title' => 'required|max:255',
             'description' => 'required',
             'picture' => 'image|nullable|max:1999'
@@ -44,12 +77,12 @@ class GalleryController extends Controller
             $filenameWithExt = $request->file('picture')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('picture')->getClientOriginalExtension();
-            $basename = uniqid() . time () ;
+            $basename = uniqid() . time();
             $smallFilename = "small_{$basename}.{$extension}";
             $mediumFilename = "medium_{$basename}.{$extension}";
             $largeFilename = "large_{$basename}.{$extension}";
             $filenameSimpan = "{$basename}.{$extension}";
-            $path = $request->file ('picture') ->storeAs ('posts_image', $filenameSimpan);
+            $path = $request->file('picture')->storeAs('posts_image', $filenameSimpan);
         } else {
             $filenameSimpan = 'noimage.png';
         }
@@ -58,30 +91,21 @@ class GalleryController extends Controller
         $post->picture = $filenameSimpan;
         $post->title = $request->input('title');
         $post->description = $request->input('description');
-        $post->save() ;
+        $post->save();
         return redirect('gallery')->with('success', 'Berhasil menambahkan data baru');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $edit = Gallery::findOrFail($id);
         return view('gallery.edit', compact('edit'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $this->validate($request, [
@@ -113,9 +137,6 @@ class GalleryController extends Controller
         return redirect('gallery')->with('success', 'Gallery updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $gallery = Gallery::findOrFail($id);
