@@ -12,6 +12,7 @@
 
 <body>
     <div class="container mt-5">
+        <b> Halaman Admin </b>
         <!-- Tombol Tambah Buku -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>Daftar Buku</h1>
@@ -32,27 +33,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data_buku as $buku)
-                    <tr>
-                        <td>{{ ++$no }}</td>
-                        <td>{{ $buku->judul }}</td>
-                        <td>{{ $buku->penulis }}</td>
-                        <td>{{ "Rp. ".number_format($buku->harga, 2, ',', '.') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($buku->tgl_terbit)->format('d-m-Y') }}</td>
-                        <td>
-                            <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button onclick="return confirm('Yakin mau di hapus?')" type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form action="{{ route('buku.edit', $buku->id) }}" method="get">
-                                @csrf
-                                <button type="submit" class="btn btn-secondary btn-sm">Edit</button>
-                            </form>
-                        </td>
-                    </tr>
+                    @foreach ($data_buku as $buku)
+                        <tr>
+                            <td>{{ ++$no }}</td>
+                            <td>{{ $buku->judul }}</td>
+                            <td>{{ $buku->penulis }}</td>
+                            <td>{{ 'Rp. ' . number_format($buku->harga, 2, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($buku->tgl_terbit)->format('d-m-Y') }}</td>
+                            <td>
+                                <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button onclick="return confirm('Yakin mau di hapus?')" type="submit"
+                                        class="btn btn-danger btn-sm">Hapus</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="{{ route('buku.edit', $buku->id) }}" method="get">
+                                    @csrf
+                                    <button type="submit" class="btn btn-secondary btn-sm">Edit</button>
+                                </form>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -61,7 +63,7 @@
         <!-- Informasi Jumlah Data dan Total Harga -->
         <div class="mt-3">
             <p><strong>Jumlah Data:</strong> {{ $jumlah }}</p>
-            <p><strong>Jumlah Harga:</strong> {{ "Rp ".number_format($total_harga, 2, ',', '.')}}</p>
+            <p><strong>Jumlah Harga:</strong> {{ 'Rp ' . number_format($total_harga, 2, ',', '.') }}</p>
         </div>
     </div>
 

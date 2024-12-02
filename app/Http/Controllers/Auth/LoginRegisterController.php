@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class LoginRegisterController extends Controller
 {
@@ -31,13 +32,25 @@ class LoginRegisterController extends Controller
         $request->validate([
             'name' => 'required|string|max:250',
             'email' => 'required|email|max:250|unique:users',
-            'password' => 'required|min:2|confirmed'
+            'password' => 'required|min:2|confirmed',
+            'photo' => 'image|nullable|max:1999'
         ]);
+
+        if ($request->hasFile('photo') ) { //
+            $filenameWithExt = $request->file('photo')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('photo')->getClientOriginalExtension();
+            $filenameSimpan = $filename . '_' . time() . '.' . $extension;
+            $path = $request->file('photo')->storeAs ('photos', $filenameSimpan); // method storeAs digunakan untuk menetapkan lokasi penyimpanan dan nama file yang diinginkan 
+        } else {
+            // tidak ada file yang diupload        
+        }
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'photo' => $path
         ]);
 
         $credentials = $request->only('email', 'password');
@@ -85,11 +98,10 @@ class LoginRegisterController extends Controller
     // Logout the user and redirect to the login page.
     // @param \Illuminate\Http\Request $request
     // @return \Illuminate\Http\Response
-    public function logout(Request $request)
-    {
+    public function logout(Request $request){
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login')->withSuccess('You have successfully logged out.');
+        return redirect()->route('login')->withSuccess('You have logged out succesfully');
     }
 }
