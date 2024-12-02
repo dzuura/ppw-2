@@ -7,10 +7,6 @@ use App\Models\Buku;
 
 class BukuController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('admin')->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
-    }
     public function index()
     {
         $data_buku = Buku::all()->sortByDesc('id');
